@@ -73,7 +73,7 @@ float calculate_magnitude(float x, float y)
 }
 
 float sum_array(std::vector<float> array)
-{
+{   // Perform a summation over the elements of an array
     int len_array = std::size(array);
     float array_sum = 0;
     for (int i=0; i < len_array; i++){
@@ -83,7 +83,7 @@ float sum_array(std::vector<float> array)
 }
 
 std::vector<float> multiply_array(std::vector<float> array1, std::vector<float> array2)
-{
+{  // Calculate the dot product of two arrays
     int len_array = std::size(array1);
     std::vector<float> array_product;
     for (int i=0; i < len_array; i++){
@@ -95,14 +95,14 @@ std::vector<float> multiply_array(std::vector<float> array1, std::vector<float> 
 std::pair<float, float> least_squares_fit(std::vector<float> x_data, std::vector<float> y_data)
 {
     int N = std::size(x_data);
-// Using the provided formulae: y = px + q
-// Calculating p, 
+    // Using the provided formulae: y = px + q
+    // Calculating p, 
     float numerator = N*sum_array(multiply_array(x_data, y_data)) - sum_array(x_data)*sum_array(y_data);
     float denominator = N*sum_array(multiply_array(x_data, x_data)) - sum_array(x_data)*sum_array(x_data);
 
     float p = numerator/denominator;
 
-//Calculating q, which only requires chaning the numerator,
+    //Calculating q, which only requires changing the numerator,
     numerator = sum_array(multiply_array(x_data, x_data))*sum_array(y_data) - sum_array(multiply_array(x_data, y_data))*sum_array(x_data);
 
     float q = numerator/denominator;
@@ -111,7 +111,7 @@ std::pair<float, float> least_squares_fit(std::vector<float> x_data, std::vector
 }
 
 float chi_squared(std::vector<float> x_data, std::vector<float> y_data, std::vector<float> y_error, float p, float q)
-{ 
+{  // Using additional data for the error on the y-values, calculate the chi-squared metric for the least-squares fit.
    int N = std::size(x_data);
    float chi_squared = 0;
    for (int i = 0; i < N; i++){
@@ -123,7 +123,8 @@ float chi_squared(std::vector<float> x_data, std::vector<float> y_data, std::vec
 }
 
 float x_tothe_y(float x, float y)
-{   
+{   // Use the built-in pow command to raise x to the power of y, which has been rounded to the nearest integer.
     x = std::pow(x, std::round(y));
     return x;
 }
+

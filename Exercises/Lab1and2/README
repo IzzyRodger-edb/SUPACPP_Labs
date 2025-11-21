@@ -1,0 +1,27 @@
+Code by Izzy Rodger, for assessment in the module "C++/ Object-Oriented Programming". 
+The assignment consists of three files:
+- CustomFunctions.cxx : containing all of the functions necessary to take the magnitude of a datapoint, 
+perform a least-squares fit to a straight line, and raise x^int(y).
+- CustomFunction.h : a header file, allowing for the use of these functions in...
+- AnalyseData.cxx : this is the main file which allows the user to interface with the program.
+
+The program must be compiled using:
+g++ AnalyseData AnalyseData.cxx CustomFunctions.cxx
+
+and subsequently run using:
+./AnalyseData
+which will print the following to the terminal:
+Please select a function:
+1) Print N lines of data
+2) Calculate the magnitude of all datapoints
+3) Least-squares fitting to a data file
+4) Calculate x^y for all datapoints
+5) Exit the program
+
+
+To ensure correct functionality, the files input2D_float.txt and error2D_float.txt must be in the same directory as this program.
+If they are not, an error message will be produced that encourages you to verify this.
+
+Thank you for the engaging assignment, and should you have any questions please do not hesitate to contact me at
+izzy.rodger@ed.ac.uk
+

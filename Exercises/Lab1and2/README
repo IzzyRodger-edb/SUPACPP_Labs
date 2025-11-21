@@ -20,7 +20,7 @@ Please select a function:
 
 
 To ensure correct functionality, the files input2D_float.txt and error2D_float.txt must be in the same directory as this program.
-If they are not, an error message will be produced that encourages you to verify this.
+If they are not present but are called during operation, an error message will be produced that encourages you to verify this.
 
 Thank you for the engaging assignment, and should you have any questions please do not hesitate to contact me at
 izzy.rodger@ed.ac.uk

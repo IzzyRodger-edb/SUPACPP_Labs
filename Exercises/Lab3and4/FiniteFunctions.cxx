@@ -62,13 +62,24 @@ Integration by hand (output needed to normalise function when plotting)
 ###################
 */ 
 double FiniteFunction::integrate(int Ndiv){ //private
-  //ToDo write an integrator
-  return -99;  
+  //Integrate numerically the function using the Trapezium rule
+  //Fairly accurate first-approximation
+  double integrated_value;
+  double dX = (m_RMax - m_RMin)/Ndiv;
+  double f_i;
+  double f_i1;
+  for (int i = 0; i < Ndiv; i++){
+    f_i = this->callFunction(m_RMin + i*dX);
+    f_i1 = this->callFunction(m_RMin+(i+1)*dX);
+    integrated_value += 0.5 * dX * (f_i + f_i1); 
+  }
+  return integrated_value;  
 }
 double FiniteFunction::integral(int Ndiv) { //public
   if (Ndiv <= 0){
     std::cout << "Invalid number of divisions for integral, setting Ndiv to 1000" <<std::endl;
     Ndiv = 1000;
+    
   }
   if (m_Integral == NULL || Ndiv != m_IntDiv){
     m_IntDiv = Ndiv;
@@ -142,6 +153,7 @@ std::vector< std::pair<double,double> > FiniteFunction::scanFunction(int Nscan){
   //We use the integral to normalise the function points
   if (m_Integral == NULL) {
     std::cout << "Integral not set, doing it now" << std::endl;
+    
     this->integral(Nscan);
     std::cout << "integral: " << m_Integral << ", calculated using " << Nscan << " divisions" << std::endl;
   }

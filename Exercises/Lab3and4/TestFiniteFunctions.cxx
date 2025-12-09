@@ -31,7 +31,7 @@ std::vector<double> read_data(std::string file_name)
 
 int main(){
 
-GaussianDist test_func(-10, 10, "Gaussian", -2, 0.02);
+CrystalBallDist test_func;
 test_func.plotFunction();
 std::string dataname = "Outputs/data/MysteryData21021.txt";
 std::vector<double> randomData = read_data(dataname);

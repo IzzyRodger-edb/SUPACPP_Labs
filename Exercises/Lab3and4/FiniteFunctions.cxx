@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <random>
 #include "FiniteFunctions.h"
 #include <filesystem> //To check extensions in a nice way
 
@@ -14,6 +15,7 @@ FiniteFunction::FiniteFunction(){
   m_RMax = 5.0;
   this->checkPath("DefaultFunction");
   m_Integral = NULL;
+  m_DataName = 'data';
 }
 
 //initialised constructor
@@ -21,6 +23,7 @@ FiniteFunction::FiniteFunction(double range_min, double range_max, std::string o
   m_RMin = range_min;
   m_RMax = range_max;
   m_Integral = NULL;
+  m_DataName = 'data';
   this->checkPath(outfile); //Use provided string to name output files
 }
 
@@ -39,7 +42,8 @@ FiniteFunction::~FiniteFunction(){
 void FiniteFunction::setRangeMin(double RMin) {m_RMin = RMin;};
 void FiniteFunction::setRangeMax(double RMax) {m_RMax = RMax;};
 void FiniteFunction::setOutfile(std::string Outfile) {this->checkPath(Outfile);};
-
+void FiniteFunction::setDataName(std::string DataName) {m_DataName = DataName;};
+void FiniteFunction::setSampleName(std::string SampleName) {m_SampleName = SampleName;};
 /*
 ###################
 //Getters
@@ -87,6 +91,51 @@ double FiniteFunction::integral(int Ndiv) { //public
     return m_Integral;
   }
   else return m_Integral; //Don't bother re-calculating integral if Ndiv is the same as the last call
+}
+
+/*
+##################
+//Metropolis Algorithm
+##################
+*/
+std::vector<double> FiniteFunction::generate_Metropolis_sample(int Ndata){
+  // Metropolis Algorithm generates random samples of a function, i+1, from 
+  // the previous step, i, by the following algorithm:
+  
+  std::vector<double> sampled_data;
+  
+  unsigned int seed = 42; // Fixing the seed for debugging purposes
+  std::mt19937 mtEngine{seed};
+  std::uniform_real_distribution<double> uniformDist(m_RMin, m_RMax);
+  std::uniform_real_distribution<double> Tdist(0, 1);
+  // 1) Generate a random x0 from a uniform distribution
+  double x = uniformDist(mtEngine);
+  sampled_data.push_back(x);
+  double y;
+  double A;
+  double T;
+  double normal_stdev = 1;
+  for(int i = 1; i < Ndata; i++){
+    // 2) Generate a random y from a uniform distribution about xi 
+    std::normal_distribution<double> normalDist{x, 4};
+    y = normalDist(mtEngine);
+    // 3) Evalute min(f(y)/f(x), 1)
+    if ((callFunction(y)/callFunction(x)) < 1){
+      A = (callFunction(y)/callFunction(x));
+    }
+    else{
+      A = 1.0;
+    }
+    // 4) Metropolis algorithm for sample x_(i+1) 
+    T = Tdist(mtEngine);
+    if (T < A){ // Accept y as x_(i+1)
+      x = y;
+    }
+    // Else, x_i = x_(i+1) therefore we don't need to assign x a new value
+    // 4) Append x_(i+1) to the sampled_data array
+    sampled_data.push_back(x);
+  }
+return sampled_data;
 }
 
 /*
@@ -174,6 +223,9 @@ std::vector< std::pair<double,double> > FiniteFunction::makeHist(std::vector<dou
   for (double point : points){
     //Get bin index (starting from 0) the point falls into using point value, range, and Nbins
     int bindex = static_cast<int>(floor((point-m_RMin)/((m_RMax-m_RMin)/(double)Nbins)));
+    if (bindex<0 || bindex>=Nbins){
+      continue;
+    }
     bins[bindex]++; //weight of 1 for each data point
     norm++; //Total number of data points
   }
@@ -189,6 +241,10 @@ std::vector< std::pair<double,double> > FiniteFunction::makeHist(std::vector<dou
 //Function which handles generating the gnuplot output, called in destructor
 //If an m_plot... flag is set, the we must have filled the related data vector
 //SUPACPP note: They syntax of the plotting code is not part of the course
+
+//Function which handles generating the gnuplot output, called in destructor
+//If an m_plot... flag is set, the we must have filled the related data vector
+//SUPACPP note: They syntax of the plotting code is not part of the course
 void FiniteFunction::generatePlot(Gnuplot &gp){
 
   if (m_plotfunction==true && m_plotdatapoints==true && m_plotsamplepoints==true){
@@ -196,7 +252,7 @@ void FiniteFunction::generatePlot(Gnuplot &gp){
     gp << "set output 'Outputs/png/"<<m_FunctionName<<".png'\n"; 
     gp << "set xrange ["<<m_RMin<<":"<<m_RMax<<"]\n";
     gp << "set style line 1 lt 1 lw 2 pi 1 ps 0\n";
-    gp << "plot '-' with linespoints ls 1 title '"<<m_FunctionName<<"', '-' with points ps 2 lc rgb 'blue' title 'sampled data', '-' with points ps 1 lc rgb 'black' pt 7 title 'data'\n";
+    gp << "plot '-' with linespoints ls 1 title '"<<m_FunctionName<<"', '-' with points ps 2 lc rgb 'blue' title '" << m_SampleName <<"', '-' with points ps 1 lc rgb 'black' pt 7 title '" << m_DataName << "'\n";
     gp.send1d(m_function_scan);
     gp.send1d(m_samples);
     gp.send1d(m_data);
@@ -206,7 +262,7 @@ void FiniteFunction::generatePlot(Gnuplot &gp){
     gp << "set output 'Outputs/png/"<<m_FunctionName<<".png'\n"; 
     gp << "set xrange ["<<m_RMin<<":"<<m_RMax<<"]\n";
     gp << "set style line 1 lt 1 lw 2 pi 1 ps 0\n";
-    gp << "plot '-' with linespoints ls 1 title '"<<m_FunctionName<<"', '-' with points ps 1 lc rgb 'black' pt 7 title 'data'\n";
+    gp << "plot '-' with linespoints ls 1 title '"<<m_FunctionName<<"', '-' with points ps 1 lc rgb 'black' pt 7 title '" << m_DataName << "'\n";
     gp.send1d(m_function_scan);
     gp.send1d(m_data);
   }
@@ -232,7 +288,7 @@ void FiniteFunction::generatePlot(Gnuplot &gp){
     gp << "set terminal pngcairo\n";
     gp << "set output 'Outputs/png/"<<m_FunctionName<<".png'\n"; 
     gp << "set xrange ["<<m_RMin<<":"<<m_RMax<<"]\n";
-    gp << "plot '-' with points ps 1 lc rgb 'black' pt 7 title 'data'\n";
+    gp << "plot '-' with points ps 1 lc rgb 'black' pt 7 title '"<< m_DataName <<"'\n";
     gp.send1d(m_data);
   }
 

@@ -6,8 +6,9 @@
 // Custom functions for the gaussian distribution
 GaussianDist::GaussianDist(){
   m_RMin = -5.0;
+  m_DataName = 'data';
   m_RMax = 5.0;
-  this->checkPath("DefaultFunction");
+  this->checkPath("Gaussian");
   m_Integral = NULL;
   m_mu = 0.0;
   m_sigma = 1.0;
@@ -15,6 +16,7 @@ GaussianDist::GaussianDist(){
 
 GaussianDist::GaussianDist(double range_min, double range_max, std::string outfile, double mu, double sigma){
   m_RMin = range_min;
+  m_DataName = 'data';
   m_RMax = range_max;
   m_Integral = NULL;
   m_mu = mu;
@@ -45,7 +47,8 @@ void GaussianDist::printInfo(){
 CauchyLorentzDist::CauchyLorentzDist(){
   m_RMin = -5.0;
   m_RMax = 5.0;
-  this->checkPath("DefaultFunction");
+  m_DataName = 'data';
+  this->checkPath("Cauchy-Lorentz");
   m_Integral = NULL;
   m_x0 = 0.0;
   m_gamma = 1.0;
@@ -54,6 +57,7 @@ CauchyLorentzDist::CauchyLorentzDist(){
 CauchyLorentzDist::CauchyLorentzDist(double range_min, double range_max, std::string outfile, double x0, double gamma){
   m_RMin = range_min;
   m_RMax = range_max;
+  m_DataName = 'data';
   m_Integral = NULL;
   m_x0 = x0;
   if (0 >= gamma){
@@ -91,7 +95,8 @@ void CauchyLorentzDist::printInfo(){
 CrystalBallDist::CrystalBallDist(){
   m_RMin = -5.0;
   m_RMax = 5.0;
-  this->checkPath("DefaultFunction");
+  m_DataName = 'data';
+  this->checkPath("Crystal Ball");
   m_Integral = NULL;
   m_n = 3.0;
   m_alpha = 1.0;
@@ -102,6 +107,7 @@ CrystalBallDist::CrystalBallDist(){
 CrystalBallDist::CrystalBallDist(double range_min, double range_max, std::string outfile, double n, double alpha, double sigma, double xbar){
   m_RMin = range_min;
   m_RMax = range_max;
+  m_DataName = 'data';
   m_Integral = NULL;
   m_sigma = sigma;
   m_xbar = xbar;

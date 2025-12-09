@@ -17,8 +17,11 @@ public:
   void setRangeMin(double RMin);
   void setRangeMax(double RMax);
   void setOutfile(std::string outfile);
+  void setDataName(std::string DataName);
+  void setSampleName(std::string SampleName);
   void plotFunction(); //Plot the function using scanFunction
-  
+  std::vector<double> generate_Metropolis_sample(int Ndata);
+
   //Plot the supplied data points (either provided data or points sampled from function) as a histogram using NBins
   void plotData(std::vector<double> &points, int NBins, bool isdata=true); //NB! use isdata flag to pick between data and sampled distributions
   virtual void printInfo(); //Dump parameter info about the current function (Overridable)
@@ -31,6 +34,8 @@ protected:
   double m_Integral;
   int m_IntDiv = 0; //Number of division for performing integral
   std::string m_FunctionName;
+  std::string m_DataName;
+  std::string m_SampleName;
   std::string m_OutData; //Output filename for data
   std::string m_OutPng; //Output filename for plot
   std::vector< std::pair<double,double> > m_data; //input data points to plot

@@ -1,0 +1,28 @@
+Code by Izzy Rodger, for assessment in the module "C++/ Object-Oriented Programming". 
+Submitted 9/12/2025.
+
+The assignment consists of four files:
+- FiniteFunctions.cxx : base class functions as provided in the assignment, modified to include numerical intergration of the function using the Trapezium rule and pseudo-random sampling using the Metropolis Algorithm.
+- FiniteFunctions.h : definition of the base FiniteFunctions class, modified to include the Metropolis Algorithm as well as the protected properties m_DataName and m_SampleName for use during plotting.
+- CustomFunction.h : definition of sub classes for the Gaussian, Cauchy-Lorentz and Crystal-Ball distributions. Through observation of the asymmetry of the random samples (a power law tail left of the center and gaussian form to the right), it was determined that data was being randomly sampled from the latter distribution by the GenerateRandomData executable.
+- CustomFunctions.cxx : subclass functions, including setting and getting functions for the distribution parameters and changes to the callFunction function in order to use the correct distribution.
+
+- TestFiniteFunctions.cxx : this is the main file which allows the user to interface with the above distributions, plotting a random data file of choice (Outputs/data/MysteryDataXXXXX.txt) and the distribution with provided parameters on top of it.
+
+The program must be compiled using:
+make -f MakeFile
+
+and subsequently run using:
+./TestFiniteDistributions
+which will print the following to the terminal:
+Please input the code of mystery data to be used
+### User input of 5 digit code ###
+
+Followed by a prompt to select a distribution from the following and specify its parameters:
+Please select an option from the following distributions:
+1) Gaussian
+2) Cauchy-Lorentz
+3) Crystal Ball
+
+Thank you for the engaging assignment, and should you have any questions please do not hesitate to contact me at
+izzy.rodger@ed.ac.uk
